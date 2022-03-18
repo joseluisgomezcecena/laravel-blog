@@ -19,6 +19,7 @@
         <p class="font-light text-gray-800 pt-8 pb-10 leading-8 ">
             {{$post->description}}
         </p>
+        <img src="{{url("images/".$post->image_path)}}" alt="{{$post->title}}">
     </div>
 
 @endsection

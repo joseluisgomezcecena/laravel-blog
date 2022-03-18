@@ -72,33 +72,60 @@ class PostsController extends Controller
      * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function show(string $slug)
+    public function show($slug)
     {
         //
-        return view('blog.show')->with(Post::where('slug', $slug)->first());
+        //return view('blog.show')->with(Post:where('slug', $slug)->first());
+        return view('blog.show')->with('post',Post::where('slug', $slug)->first());
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(string $slug)
     {
         //
+        return view('blog.edit')->with('post', Post::where('slug', $slug)->first());
+
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
         //
+
+        $request->validate([
+            'title'=>'required',
+            'description'=>'required',
+            'image'=>'required|mimes:jpg,jpeg,png,gif|max:5048'
+        ]);
+
+        $new_image_name = uniqid() . "-" . $request->title . "." . $request->image->extension();
+
+        $request->image->move(public_path('images'), $new_image_name);
+
+        //$slug = SlugService::createSlug(Post::class, 'slug', $request->title);
+
+
+        Post::where('slug', $slug)->update([
+            'title'=>$request->input('title'),
+            'description'=>$request->input('description'),
+            'slug'=>$slug,
+            'image_path'=>$new_image_name,
+            'user_id'=>auth()->user()->id
+        ]);
+
+        return redirect('/blog')->with('message', 'Your post has been updated!');
+
     }
 
     /**

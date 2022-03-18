@@ -44,6 +44,13 @@
                     {{$post->description}}
                 </p>
                 <a class="uppercase bg-blue-500 text-gray-50 text-lg font-extrabold py-4 px-8 rounded-3xl" href="/blog/{{$post->slug}}">Keep Reading</a>
+
+                @if(isset(\Illuminate\Support\Facades\Auth::user()->id) && \Illuminate\Support\Facades\Auth::user()->id == $post->user_id)
+                    <span class="">
+                        <a class="uppercase bg-gray-800  text-lg font-extrabold py-4 px-8 rounded-3xl text-white" href="/blog/{{$post->slug}}/edit">Edit</a>
+                    </span>
+                @endif
+
             </div>
 
         </div>
